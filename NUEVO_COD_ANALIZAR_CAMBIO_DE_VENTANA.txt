@@ -1,0 +1,138 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+
+class Review:
+    def __init__(self, id_destino, id_usuario, calificacion, comentario, animo):
+        self.id_destino = id_destino
+        self.id_usuario = id_usuario
+        self.calificacion = calificacion
+        self.comentario = comentario
+        self.animo = animo
+
+
+def cargar_destino():
+    seleccion = destino_combobox.get()
+    if seleccion in destinos:
+        id_destino_var.set(destinos[seleccion]["id"])
+        comentario_text.delete("1.0", "end")
+        comentario_text.insert("1.0", destinos[seleccion]["comentario"])
+        calificacion_var.set(destinos[seleccion]["calificacion"])
+        animo_var.set(destinos[seleccion]["animo"])
+
+
+def mostrar_review_guardada(review):
+    ventana_review = tk.Toplevel(ventana)
+    ventana_review.title("Review Guardada")
+
+    tk.Label(ventana_review, text="Review guardada:", font=("Arial", 14)).pack(padx=10, pady=10)
+
+    tk.Label(ventana_review, text=f"Destino: {review.id_destino}").pack(padx=5, pady=5)
+    tk.Label(ventana_review, text=f"Usuario ID: {review.id_usuario}").pack(padx=5, pady=5)
+    tk.Label(ventana_review, text=f"Calificación: {review.calificacion}").pack(padx=5, pady=5)
+    tk.Label(ventana_review, text=f"Comentario: {review.comentario}").pack(padx=5, pady=5)
+    tk.Label(ventana_review, text=f"Ánimo: {review.animo}").pack(padx=5, pady=5)
+
+
+def guardar_review():
+    id_destino = id_destino_var.get()
+    id_usuario = usuario_var.get()
+    calificacion = calificacion_var.get()
+    comentario = comentario_text.get("1.0", "end").strip()
+    animo = animo_var.get()
+
+    review = Review(id_destino, id_usuario, calificacion, comentario, animo)
+
+    # Aquí puedes agregar código para guardar la review en una base de datos o hacer algo con los datos ingresados.
+    # En este ejemplo, mostramos los detalles de la review en una ventana emergente.
+    mostrar_review_guardada(review)
+
+
+# Datos de los destinos
+destinos = {
+    "Parrilla Don Gauchito": {"id": 101, "comentario": "Tipo de cocina: Asado argentino (carne de res, chorizo, morcilla).", "calificacion": "", "animo": ""},
+    "Restaurante La Tradicion": {"id": 102, "comentario": "Comida regional (empanadas, locro, humitas).", "calificacion": "", "animo": ""},
+    "Cafeteria Sabor Andino": {"id": 103, "comentario": "Café y té (café de altura, mate cocido varios sabores, té de coca, té de burro, té de toronjil, entre otros).", "calificacion": "", "animo": ""},
+    "Tratoria Bella Italia": {"id": 104, "comentario": "Comida italiana (pastas frescas, pizzas napolitana, salsa pomodoro, postres tiramisu).", "calificacion": "", "animo": ""},
+    "Sushi Garden": {"id": 105, "comentario": "Comida japonesa (sushi variado, sashimi, tempora).", "calificacion": "", "animo": ""},
+    "Sabores Hindues de Salta": {"id": 106, "comentario": "Tipo de cocina hindú (curry, Naan, Masala Chai).", "calificacion": "", "animo": ""}
+}
+
+# Lista para mapear los valores de calificación a categorías de estrellas
+categorias_calificacion = ["★", "★★", "★★★", "★★★★", "★★★★★"]
+
+# Lista para el rango de ánimo de 1 a 10
+rango_animo = list(range(1, 11))
+
+# Crear la ventana principal
+ventana = tk.Tk()
+ventana.title("Puntuación de Destinos Culinarios")
+
+# Variables para los campos de entrada
+id_destino_var = tk.StringVar()
+usuario_var = tk.StringVar()
+calificacion_var = tk.StringVar()
+animo_var = tk.StringVar()
+
+# Colores
+color_naranja = "#FF8C00"  # Naranja
+color_gris_azulado = "#B0C4DE"  # Gris azulado
+color_verde_claro = "#98FB98"  # Verde claro
+color_azul_claro = "#87CEFA"  # Azul claro
+
+# Estilo del Combobox
+style = ttk.Style()
+style.theme_use('default')
+style.map('TCombobox', fieldbackground=[('readonly', color_verde_claro)])
+
+# Etiqueta con "REVIEW" en color naranja
+tk.Label(ventana, text="REVIEW", bg=color_naranja, fg="white", font=("Arial", 14)).grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+tk.Label(ventana, text="Modo Selección de Destino", bg=color_gris_azulado, fg="white", font=("Arial", 14)).grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+
+# Etiquetas para el resto de campos
+tk.Label(ventana, text="Destino:", font=("Arial", 12)).grid(row=2, column=0, padx=5, pady=5)
+tk.Label(ventana, text="ID Destino:", font=("Arial", 12)).grid(row=3, column=0, padx=5, pady=5)
+tk.Label(ventana, text="ID Usuario:", font=("Arial", 12)).grid(row=4, column=0, padx=5, pady=5)
+tk.Label(ventana, text="Calificación:", font=("Arial", 12)).grid(row=5, column=0, padx=5, pady=5)
+tk.Label(ventana, text="Comentario:", font=("Arial", 12)).grid(row=6, column=0, padx=5, pady=5)
+tk.Label(ventana, text="Ánimo:", font=("Arial", 12)).grid(row=7, column=0, padx=5, pady=5)
+
+# Combobox para seleccionar el destino
+destino_combobox = ttk.Combobox(ventana, values=list(destinos.keys()), font=("Arial", 12), state='readonly')
+destino_combobox.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
+destino_combobox.bind("<<ComboboxSelected>>", cargar_destino)
+
+# Combobox para seleccionar el ID Destino
+id_destino_combobox = ttk.Combobox(ventana, values=list(range(101, 107)), font=("Arial", 12), state='readonly')
+id_destino_combobox.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
+
+# Combobox para seleccionar el ID Usuario
+id_usuario_combobox = ttk.Combobox(ventana, values=list(range(1, 100)), font=("Arial", 12), state='readonly')
+id_usuario_combobox.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
+
+# Combobox para seleccionar la Calificación
+calificacion_combobox = ttk.Combobox(ventana, values=categorias_calificacion, font=("Arial", 12), state='readonly')
+calificacion_combobox.grid(row=5, column=1, padx=5, pady=5, sticky="ew")
+
+# Combobox para seleccionar el Ánimo
+animo_combobox = ttk.Combobox(ventana, values=rango_animo, font=("Arial", 12), state='readonly')
+animo_combobox.grid(row=7, column=1, padx=5, pady=5, sticky="ew")
+
+# Campos de entrada
+comentario_text = tk.Text(ventana, height=5, width=30, wrap=tk.WORD, insertborderwidth=2, relief=tk.SOLID, borderwidth=1, font=("Arial", 12))
+comentario_text.grid(row=6, column=1, padx=5, pady=5, sticky="ew")
+
+# Botón para guardar la review
+tk.Button(ventana, text="Guardar Review", command=guardar_review, font=("Arial", 12)).grid(row=8, column=0, columnspan=2, padx=5, pady=10, sticky="ew")
+
+# Cambiar colores de fondo
+ventana.option_add("*Entry*background", color_gris_azulado)
+ventana.option_add("*Entry*foreground", "black")
+ventana.option_add("*Entry*font", ("Arial", 12))
+ventana.option_add("*Button*background", color_azul_claro)
+ventana.option_add("*Button*foreground", "black")
+ventana.option_add("*Button*font", ("Arial", 12))
+
+# Iniciar el bucle de la aplicación
+ventana.mainloop()
